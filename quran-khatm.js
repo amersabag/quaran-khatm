@@ -2,8 +2,21 @@ Khatmat = new Mongo.Collection('khatmat');
 Periods = new Mongo.Collection('periods');
 Parts = new Mongo.Collection('parts');
 
+function addDays(theDate, days) {
+  return new Date(theDate.getTime() + days*24*60*60*1000);
+}
+var weekday = new Array(7);
+weekday[0]=  "Sunday";
+weekday[1] = "Monday";
+weekday[2] = "Tuesday";
+weekday[3] = "Wednesday";
+weekday[4] = "Thursday";
+weekday[5] = "Friday";
+weekday[6] = "Saturday";
 if (Meteor.isClient) {
-
+  Template.registerHelper('formatDate', function(date) {
+    return weekday[date.getDay()] + ' ' + date.getDate() + '-' + (date.getMonth() + 1)  + '-' + date.getFullYear();
+  });
   Meteor.startup(function(){
     var url = _.object(_.compact(_.map(location.search.slice(1).split('&'), function(item) {  if (item) return item.split('='); })));
     if(url['khatmaId'])
@@ -85,8 +98,9 @@ if (Meteor.isClient) {
       var startDate = currentKhatma.startDate;
       if(currentKhatmaPeriodCount)
       {
-        startDate.setDate(
-            startDate.getDate() + currentKhatmaPeriodCount * currentKhatma.period
+        startDate = addDays(
+            startDate,
+            currentKhatmaPeriodCount * currentKhatma.period
         );
       }
       var periodId = Periods.insert({

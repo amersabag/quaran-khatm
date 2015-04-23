@@ -30,7 +30,7 @@
 <template name="listKhatmat">
     {{#each khatmat}}
       <div><a href="#" class="khatmaLink">{{name}}</a>
-          <br>Every {{period}} days, start from: {{startDate}}
+          <br>Every {{period}} days, start from: {{formatDate startDate}}
           <br>Created by: {{creatorName}}, Created at: {{createdAt}}
       </div>
     {{/each}}
@@ -46,7 +46,7 @@
 </template>
 <template name="khatma">
     <div><a href="" class="listKhatmat">Show khatmat list</a></div>
-    <div>Khatma Name: <a href="?khatmaId={{_id}}">{{name}}</a>, Period: {{period}}, Start Date: {{startDate}}</div>
+    <div>Khatma Name: <a href="?khatmaId={{_id}}">{{name}}</a>, Period: {{period}}, Start Date: {{formatDate  startDate}}</div>
     {{#if currentPeriod}}
       {{> period currentPeriod}}
     {{else}}
@@ -64,13 +64,13 @@
 <template name="listPeriods">
   {{#each periods}}
     <div>
-        <a href="#" class="periodLink">Start date: {{startDate}}</a>
+        <a href="#" class="periodLink">Start date: {{formatDate startDate}}</a>
     </div>
   {{/each}}
 </template>
 <template name="period">
     <div><a href="" class="listPeriods">Show periods list</a></div>
-  <div>Start date: <a href="?khatmaId={{khatmaId}}&periodId={{_id}}">{{startDate}}</a></div>
+  <div>Start date: <a href="?khatmaId={{khatmaId}}&periodId={{_id}}">{{formatDate startDate}}</a></div>
   <div>
       <table>
           <thead>
