@@ -97,7 +97,7 @@ if (Meteor.isClient) {
         khatmaId: this._id,
         startDate: {$lt: startDate}
       }, {
-        $sort: {startDate: -1}
+        sort: {startDate: -1}
       });
       var previousPeriodParts = [];
       if(previousPeriod)
@@ -106,7 +106,7 @@ if (Meteor.isClient) {
           khatmaId: this._id,
           periodId: previousPeriod._id
         }, {
-          $sort: {partNumber: 1}
+          sort: {partNumber: 1}
         }).fetch();
       }
       for(var i = 1; i <= 30; ++i)
@@ -150,6 +150,8 @@ if (Meteor.isClient) {
       return Parts.find({
         khatmaId: Session.get('currentKhatmaId'),
         periodId: Session.get('currentPeriodId')
+      }, {
+        sort: {partNumber: 1}
       });
     }
   });
