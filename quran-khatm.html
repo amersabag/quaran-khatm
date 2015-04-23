@@ -3,12 +3,127 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+  {{> loginButtons}}
 
-  {{> hello}}
+  <h1>Welcome to Khatmat!</h1>
+  {{#if currentKhatma}}
+    {{> khatma currentKhatma}}
+  {{else}}
+    {{#if currentUser}}
+      {{> createKhatma}}
+    {{else}}
+      Login/Create account to be able to add your own khatma.
+    {{/if}}
+    {{> listKhatmat}}
+  {{/if}}
+
+<pre>
+  This system has the following features:
+    - You can create as much khatmat as you want
+    - For each khatma you should decide the period time in days, and the start date
+    - Every time you add a period in  a khatma, it will calculate the start date automatically
+    - Each new period will move the owners of the parts of the previous period one part automatically
+
+</pre>
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="listKhatmat">
+    {{#each khatmat}}
+      <div><a href="#" class="khatmaLink">{{name}}</a>
+          <br>Every {{period}} days, start from: {{startDate}}
+          <br>Created by: {{creatorName}}, Created at: {{createdAt}}
+      </div>
+    {{/each}}
+</template>
+
+<template name="createKhatma">
+    <form class="createKhatmaForm">
+        <div><label>Name of khatma: <input type="text" name="name"></label></div>
+        <div><label>Period in days: <input type="text" name="period"></label></div>
+        <div><label>Date of start: <input type="text" name="start"></label></div>
+        <div><input type="submit"></div>
+    </form>
+</template>
+<template name="khatma">
+    <div><a href="" class="listKhatmat">Show khatmat list</a></div>
+    <div>Khatma Name: <a href="?khatmaId={{_id}}">{{name}}</a>, Period: {{period}}, Start Date: {{startDate}}</div>
+    {{#if currentPeriod}}
+      {{> period currentPeriod}}
+    {{else}}
+      {{#if currentUser}}
+        {{> createPeriod}}
+      {{/if}}
+      {{> listPeriods}}
+    {{/if}}
+</template>
+<template name="createPeriod">
+    <form class="createPeriod">
+        <input type="submit" value="Add new period">
+    </form>
+</template>
+<template name="listPeriods">
+  {{#each periods}}
+    <div>
+        <a href="#" class="periodLink">Start date: {{startDate}}</a>
+    </div>
+  {{/each}}
+</template>
+<template name="period">
+    <div><a href="" class="listPeriods">Show periods list</a></div>
+  <div>Start date: <a href="?khatmaId={{khatmaId}}&periodId={{_id}}">{{startDate}}</a></div>
+  <div>
+      <table>
+          <thead>
+            <tr>
+                <th>Part number</th>
+                <th>Owner</th>
+                <th>Done</th>
+                <th>Options</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            {{#each parts}}
+              {{> part}}
+            {{/each}}
+          </tbody>
+      </table>
+  </div>
+
+</template>
+<template name="part">
+    {{test}}
+    <tr>
+        <td>
+          {{partNumber}}
+        </td>
+      <td>
+        {{#if ownerId}}
+          {{ownerName}}
+        {{/if}}
+
+      </td>
+        <td>
+        {{#if ownerId}}
+          <input
+                  type="checkbox"
+                  class="setDone"
+                  checked="{{done}}"
+                  disabled="{{#unless currentUserIsTheOwner}}disabled{{/unless}}">
+        {{/if}}
+        </td>
+        <td>
+          {{#if ownerId}}
+            {{#if currentUserIsTheOwner}}
+              {{#unless done}}
+                  <a href="" class="removeOwner">Leave this part</a>
+              {{/unless}}
+            {{/if}}
+          {{else}}
+            {{#if currentUser}}
+                <a href="" class="setOwner">Get this part</a>
+            {{/if}}
+          {{/if}}
+        </td>
+    </tr>
 </template>
